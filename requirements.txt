@@ -1,0 +1,7 @@
+Django<1.11
+psycopg2
+pytest
+pytest-django
+pytest-cov
+model_mommy
+django-test-plus
