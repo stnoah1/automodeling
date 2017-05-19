@@ -16,7 +16,7 @@
 
 import numpy as np
 import scipy.io
-train = scipy.io.loadmat('train24_32.mat')
+train = scipy.io.loadmat('../voxelise/voxel.mat')
 
 # Delete extra .matfile stuff
 del train['__globals__']
@@ -41,4 +41,4 @@ for i, key in enumerate(class_keys):
     del train[key]
 del train
 
-np.savez_compressed('modelnet40_rot24_train.npz', **{'features': features, 'targets': targets})
+np.savez_compressed('modelnet40_rot12_train.npz', **{'features': features, 'targets': targets})

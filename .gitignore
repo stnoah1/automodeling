@@ -162,3 +162,7 @@ fabric.properties
 .DS_store
 
 octave-workspace
+
+.idea
+bin
+.DS_Store

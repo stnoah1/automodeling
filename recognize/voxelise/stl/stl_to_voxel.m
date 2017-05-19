@@ -1,0 +1,1 @@
+function []=stl_to_voxel(file_path)    res = 32;    num_rotations = 12;    for i = 1:num_rotations        theta = 2*pi*(j-1)/num_rotations;        result(1,i,:,:,:)=VOXELISE(res,res,res,theta,file_path,'xyz');    end  save('../mat_data/voxel.mat', 'result');end
