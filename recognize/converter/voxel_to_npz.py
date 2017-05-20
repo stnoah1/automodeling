@@ -2,8 +2,8 @@ import numpy as np
 import scipy.io
 
 
-def voxel_to_npz(mat_file_path, npz_file_path, num_rotate=32, res=32):
-    train = scipy.io.loadmat(mat_file_path)
+def execute(in_mat_file, out_npz_file, num_rotate=12, res=32):
+    train = scipy.io.loadmat(in_mat_file)
 
     # Delete extra .matfile stuff
     del train['__globals__']
@@ -28,4 +28,4 @@ def voxel_to_npz(mat_file_path, npz_file_path, num_rotate=32, res=32):
         del train[key]
     del train
 
-    np.savez_compressed(npz_file_path, **{'features': features, 'targets': targets})
+    np.savez_compressed(out_npz_file, **{'features': features, 'targets': targets})
