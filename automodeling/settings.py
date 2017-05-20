@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #local
+    # 3rd-party
+    'bootstrap3',
+    # local
     'automodeling',
     'design',
 ]
