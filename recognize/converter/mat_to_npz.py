@@ -1,8 +1,12 @@
 import numpy as np
 import scipy.io
+import os
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 
-def execute(in_mat_file, out_npz_file, num_rotate=12, res=32):
+def execute(in_mat_file=os.path.join(dir_path, 'tmp', 'voxel.mat'),
+            out_npz_file=os.path.join(dir_path, 'tmp', 'voxel.npz'), num_rotate=12, res=32):
     train = scipy.io.loadmat(in_mat_file)
 
     # Delete extra .matfile stuff
@@ -29,3 +33,7 @@ def execute(in_mat_file, out_npz_file, num_rotate=12, res=32):
     del train
 
     np.savez_compressed(out_npz_file, **{'features': features, 'targets': targets})
+
+
+if __name__ == '__main__':
+    execute('tmp/voxel.mat', 'tmp/voxel.npz')

@@ -21,12 +21,6 @@ def make_testing_functions(cfg, model):
     # Shared Variable for input array
     X_shared = lasagne.utils.shared_empty(5, dtype='float32')
 
-    # Class Vector
-    y = T.TensorType('int32', [False] * 1)('y')
-
-    # Shared Variable for class vector
-    y_shared = lasagne.utils.shared_empty(1, dtype='float32')
-
     # Output layer
     l_out = model['l_out']
 
@@ -41,21 +35,12 @@ def make_testing_functions(cfg, model):
     # Average across rotation examples
     pred = T.argmax(T.sum(y_hat_deterministic, axis=0))
 
-    # Get error rate
-    classifier_test_error_rate = T.cast(T.mean(T.neq(pred, T.mean(y, dtype='int32'))), 'float32')
 
-    # Compile Functions 
-    test_error_fn = theano.function([batch_index], [classifier_test_error_rate, pred], givens={
-        X: X_shared[test_batch_slice],
-        y: T.cast(y_shared[test_batch_slice], 'int32')
-    })
-    tfuncs = {'test_function': test_error_fn}
+    # Compile Functions
     tvars = {'X': X,
-             'y': y,
              'X_shared': X_shared,
-             'y_shared': y_shared,
              }
-    return tfuncs, tvars, model
+    return l_out, pred, tvars, model
 
 
 # Main Function
@@ -80,7 +65,7 @@ def main(data_path, model='VRN'):
 
     # Compile functions
     print('Compiling theano functions...')
-    tfuncs, tvars, model = make_testing_functions(cfg, model)
+    l_out, pred, tvars, model = make_testing_functions(cfg, model)
 
     # Load weights
     metadata = checkpoints.load_weights(weights_fname, model['l_out'])
@@ -94,7 +79,6 @@ def main(data_path, model='VRN'):
 
     # Load testing data into memory
     xt = np.asarray(np.load(data_path)['features'], dtype=np.float32)
-    yt = np.asarray(np.load(data_path)['targets'], dtype=np.float32)
 
     # Get number of rotations to average across. If you want this to be different from
     # the number of rotations specified in the config file, make sure to change the 
@@ -133,7 +117,6 @@ def main(data_path, model='VRN'):
 
         # Get chunks
         x_shared = np.asarray(xt[chunk_index * test_chunk_size:upper_range, :, :, :, :], dtype=np.float32)
-        y_shared = np.asarray(yt[chunk_index * test_chunk_size:upper_range], dtype=np.float32)
 
         # Get number of batches for this chunk
         num_batches = len(x_shared) // n_rotations
@@ -157,7 +140,7 @@ def main(data_path, model='VRN'):
             # confusion_matrix[pred,int(yt[cfg['n_rotations']*test_itr])]+=1
 
     # Optionally, print confusion matrix
-    # print(confusion_matrix)        
+    # print(confusion_matrix)
 
     # Get total accuracy
     t_class_error = 1 - float(np.mean(test_class_error))
