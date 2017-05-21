@@ -36,7 +36,7 @@ class ModelNet(TimeStampedModel):
     class Meta:
         verbose_name = "ModelNet 데이터"
 
-    modelnet_id = models.CharField('ModelNetID', max_length=30)
+    modelnet_id = models.CharField('ModelNetID', max_length=30, null=True, blank=True)
     class_info = models.PositiveSmallIntegerField("클래스", choices=CHOICES['classes'])
 
     def __str__(self):
