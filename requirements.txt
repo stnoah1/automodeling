@@ -1,3 +1,5 @@
+scipy
+numpy
 Django<1.11
 psycopg2
 pytest
