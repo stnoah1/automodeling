@@ -7,3 +7,4 @@ pytest-django
 pytest-cov
 model_mommy
 django-test-plus
+django-bootstrap3

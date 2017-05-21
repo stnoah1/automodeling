@@ -1,0 +1,14 @@
+{
+  "name": "automodeling",
+  "version": "1.0.1",
+  "description": "AUTOMODELING",
+  "main": "/",
+  "dependencies": {
+    "three-js": ">=79.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com:3DDL/automodeling.git"
+  },
+  "license": "ISC"
+}
