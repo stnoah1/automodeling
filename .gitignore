@@ -156,6 +156,7 @@ fabric.properties
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
+# Caches
 *.pyc
 .*.swp
 .cache
@@ -171,4 +172,4 @@ collected_static
 
 # etc
 /original_datasets
-.DS_store
+*/.DS_store
