@@ -4,7 +4,7 @@ from django.db import models
 from automodeling.models import TimeStampedModel
 
 CHOICES = {
-    "클래스": [
+    "classes": [
         (0, "아무거나"), (1, "적어봄")
     ]
 }
@@ -36,9 +36,8 @@ class ModelNet(TimeStampedModel):
     class Meta:
         verbose_name = "ModelNet 데이터"
 
-    thumbnail = models.FileField('썸네일')
-    class_info = models.PositiveSmallIntegerField("클래스", choices=CHOICES['클래스'])
-    fc_vector = JSONField('인풋데이터')
+    modelnet_id = models.CharField('ModelNetID', max_length=30)
+    class_info = models.PositiveSmallIntegerField("클래스", choices=CHOICES['classes'])
 
     def __str__(self):
-        return '{0.id}번 모델: 클래스-{0.class_info}'.format(self)
+        return '{0.modelnet_id} 모델: 클래스-{0.class_info}'.format(self)
