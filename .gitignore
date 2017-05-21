@@ -160,8 +160,15 @@ fabric.properties
 .*.swp
 .cache
 
-/original_datasets
-
-.DS_store
-
+# Octave
 octave-workspace
+
+# Dependency directories
+node_modules
+
+# static files
+collected_static
+
+# etc
+/original_datasets
+.DS_store
