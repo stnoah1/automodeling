@@ -1,0 +1,56 @@
+{% extends 'layout/base.html' %}{% load static %}
+{% block bootstrap3_extra_head %}
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #f0f0f0;
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+{% endblock %}
+{% block base_content %}
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">AutoModeling</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">4</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">[예시]Do you mean: </a></li>
+                    <li>
+                        <a data-toggle="tooltip" style="padding: 0px;"
+                           title="<img src='http://getbootstrap.com/apple-touch-icon.png' />">
+                            <img class="navbar-brand" style="padding: 5px;"
+                                 src="https://ee5817f8e2e9a2e34042-3365e7f0719651e5b8d0979bce83c558.ssl.cf5.rackcdn.com/python.png">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        {% block design_content %}
+        {% endblock %}
+    </div>
+   <script src="{% static 'js/common.js' %}"></script>
+{% endblock %}
