@@ -58,7 +58,7 @@ def main(data_path, model='VRN'):
     cfg = config_module.CONFIG
 
     # Find weights file
-    weights_fname = 'models/{model}.npz'.format(model=model)
+    weights_fname = 'recognize/classifier/models/{model}.npz'.format(model=model)
 
     # Get Model
     model = config_module.get_model()
