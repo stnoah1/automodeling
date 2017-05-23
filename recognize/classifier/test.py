@@ -120,8 +120,8 @@ def main(data_path, model='VRN'):
 
         # Get number of batches for this chunk
         num_batches = len(x_shared) // n_rotations
-        print(l_out)
-        print(pred)
+        print(l_out[0])
+        print(pred[0])
 
         # Prepare data
         tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
