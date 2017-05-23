@@ -153,4 +153,4 @@ def main(data_path, model='VRN'):
 
 
 if __name__ == '__main__':
-    main('recognize/converter/tmp/voxel.npz', 'models/VRN.py')
+    main('recognize/converter/tmp/voxel.npz')
