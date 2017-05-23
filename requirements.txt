@@ -8,3 +8,4 @@ pytest-cov
 model_mommy
 django-test-plus
 django-bootstrap3
+djangorestframework
