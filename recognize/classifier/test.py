@@ -10,10 +10,11 @@ import lasagne
 import numpy as np
 import theano.tensor as T
 
+
+# Define the testing functions
 from recognize.classifier.utils import checkpoints
 
 
-# Define the testing functions
 def make_testing_functions(cfg, model):
     # Input Array
     X = T.TensorType('float32', [False] * 5)('X')
@@ -152,4 +153,4 @@ def main(data_path, model='VRN'):
 
 
 if __name__ == '__main__':
-    main('../converter/tmp/voxel.npz', 'models/VRN.py')
+    main('recognize/converter/tmp/voxel.npz', 'models/VRN.py')
