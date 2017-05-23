@@ -120,6 +120,8 @@ def main(data_path, model='VRN'):
 
         # Get number of batches for this chunk
         num_batches = len(x_shared) // n_rotations
+        print(l_out)
+        print(pred)
 
         # Prepare data
         tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
@@ -142,8 +144,6 @@ def main(data_path, model='VRN'):
     # print(confusion_matrix)
 
     # Get total accuracy
-    t_class_error = 1 - float(np.mean(test_class_error))
-    print('Test accuracy is: ' + str(t_class_error))
 
     # Optionally save best accuracy
     # if t_class_error>best_acc:
