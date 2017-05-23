@@ -17,7 +17,17 @@ def home(request):
 @api_view(['GET', 'POST'])
 def convert_view(request, code):
     # TODO : CONVERT
-    context = {'stl': request.data}
+    # - Function Execute Sample
+    #    stl_data = request.data
+    #    get_model_info(stl_data)
+    # - Return Sample
+    context = {
+        'class_info': [
+            {'class_id': 4, 'confidence_rate': 0.93},
+            {'class_id': 6, 'confidence_rate': 0.07}
+        ],
+        'related_models': [34, 22, 11, 33, 44]
+    }
     return Response(context)
 
 
