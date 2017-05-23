@@ -113,7 +113,7 @@ def main(data_path, model='VRN'):
     for chunk_index in range(num_test_chunks):
 
         # Define upper index of chunk
-        upper_range = min(len(yt), (chunk_index + 1) * test_chunk_size)
+        upper_range = min(1, (chunk_index + 1) * test_chunk_size)
 
         # Get chunks
         x_shared = np.asarray(xt[chunk_index * test_chunk_size:upper_range, :, :, :, :], dtype=np.float32)
