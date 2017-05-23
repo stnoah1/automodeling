@@ -8,8 +8,8 @@ import math
 
 import lasagne
 import numpy as np
-import theano
 import theano.tensor as T
+
 from recognize.classifier.utils import checkpoints
 
 
@@ -35,7 +35,6 @@ def make_testing_functions(cfg, model):
     # Average across rotation examples
     pred = T.argmax(T.sum(y_hat_deterministic, axis=0))
 
-
     # Compile Functions
     tvars = {'X': X,
              'X_shared': X_shared,
@@ -50,7 +49,7 @@ class WrongModelError(object):
 
 def main(data_path, model='VRN'):
     if model == 'VRN':
-        from recognize.classifier.model import VRN as config_module
+        from recognize.classifier.models import VRN as config_module
     else:
         raise WrongModelError
 
@@ -58,7 +57,7 @@ def main(data_path, model='VRN'):
     cfg = config_module.CONFIG
 
     # Find weights file
-    weights_fname = 'model/{model}.npz'.format(model=model)
+    weights_fname = 'models/{model}.npz'.format(model=model)
 
     # Get Model
     model = config_module.get_model()
@@ -123,7 +122,6 @@ def main(data_path, model='VRN'):
 
         # Prepare data
         tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
-        tvars['y_shared'].set_value(y_shared, borrow=True)
 
         # Loop across batches!
         for bi in range(num_batches):
@@ -149,13 +147,9 @@ def main(data_path, model='VRN'):
     # Optionally save best accuracy
     # if t_class_error>best_acc:
     # best_acc = t_class_error
-    # checkpoints.save_weights(weights_fname, model['l_out'],
+    # checkpoints.save_weights(weights_fname, models['l_out'],
     # {'best_acc':best_acc})
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('model')
-    parser.add_argument('data_path', default='datasets/modelnet40_rot_test.npz')
-    args = parser.parse_args()
-    main(args.data_path, args.model)
+    main('../converter/tmp/voxel.npz', 'models/VRN.py')

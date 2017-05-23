@@ -13,8 +13,8 @@ def execute(file):
     # neighbor_model_list = get_neighbor_model(fc_vector)
 
     # remove temporary(npz, mat) file
-    os.remove(mat_file_path)
-    os.remove(npz_file_path)
+    # os.remove(mat_file_path)
+    # os.remove(npz_file_path)
 
 
 def get_neighbor_model(fc_vector):
