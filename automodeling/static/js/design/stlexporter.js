@@ -136,8 +136,7 @@ else if ((typeof define !== "undefined" && define !== null) && (define.amd !== n
 
 function saveSTL(scene) {
     var exporter = new THREE.STLExporter();
-    var stl_string = exporter.parse(scene);
     // var blob = new Blob([stl_string], {type: 'text/plain'});
     // saveAs(blob, "test" + '.stl');
-    return stl_string;
+    return exporter.parse(scene);
 }
