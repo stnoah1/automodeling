@@ -171,5 +171,5 @@ collected_static
 
 # etc
 /original_datasets
-*/.DS_store
+.DS_store
 bin

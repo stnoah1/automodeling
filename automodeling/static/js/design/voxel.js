@@ -15,7 +15,6 @@ function init() {
     info.style.top = '10px';
     info.style.width = '100%';
     info.style.textAlign = 'center';
-    info.innerHTML = '<a href="http://threejs.org" target="_blank">three.js</a> - voxel painter - webgl<br><strong>click</strong>: add voxel, <strong>shift + click</strong>: remove voxel';
     container.appendChild(info);
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
     camera.position.set(500, 800, 1300);
@@ -29,7 +28,7 @@ function init() {
     // cubes
     cubeGeo = new THREE.BoxGeometry(50, 50, 50);
     cubeMaterial = new THREE.MeshLambertMaterial({
-        color: 0xfeb74c,
+        color: 0xfeb74c
     });
     // grid
     var size = 500, step = 50;
@@ -46,7 +45,7 @@ function init() {
     //
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
-    var geometry = new THREE.PlaneBufferGeometry(1000, 1000);
+    geometry = new THREE.PlaneBufferGeometry(1000, 1000);
     geometry.rotateX(-Math.PI / 2);
     plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({visible: false}));
     scene.add(plane);
@@ -59,14 +58,12 @@ function init() {
     scene.add(directionalLight);
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setClearColor(0xf0f0f0);
-    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener('keydown', onDocumentKeyDown, false);
     document.addEventListener('keyup', onDocumentKeyUp, false);
-    //
     window.addEventListener('resize', onWindowResize, false);
 }
 function onWindowResize() {
@@ -95,7 +92,7 @@ function onDocumentMouseDown(event) {
         var intersect = intersects[0];
         // delete cube
         if (isShiftDown) {
-            if (intersect.object != plane) {
+            if (intersect.object !== plane) {
                 scene.remove(intersect.object);
                 objects.splice(objects.indexOf(intersect.object), 1);
             }

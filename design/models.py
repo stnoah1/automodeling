@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
@@ -13,8 +15,12 @@ CHOICES = {
 class Project(TimeStampedModel):
     class Meta:
         verbose_name = "프로젝트"
+        indexes = [
+            models.Index(fields=['code'], name='code_idx'),
+        ]
 
     ip = models.GenericIPAddressField('IP주소', null=True, blank=True)
+    code = models.UUIDField('프로젝트코드', default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return '{}'.format(self.id)

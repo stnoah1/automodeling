@@ -3,6 +3,9 @@
 {% load bootstrap3 %}
 
 {% block design_content %}
+    <script src="{% static 'components/file-saver/FileSaver.js' %}"></script>
     <script src="{% static 'components/three-js/three.js' %}"></script>
-    <script src="{% static 'js/voxel.js' %}"></script>
+    <script src="{% static 'js/design/stlexporter.js' %}"></script>
+    <script src="{% static 'js/design/voxel.js' %}"></script>
+    <script src="{% static 'js/design/design.js' %}"></script>
 {% endblock %}
