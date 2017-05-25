@@ -10,7 +10,6 @@ class FileFormatError(Exception):
 
 
 def execute(file, res=32, num_rotate=12):
-
     _, file_ext = splitext(file)
     if file_ext in ['.off', '.stl']:
         subprocess.call([
@@ -30,4 +29,4 @@ def execute(file, res=32, num_rotate=12):
 
 
 if __name__ == '__main__':
-    execute('test_data/airplane.off')
+    execute('test_data/chair.stl')
