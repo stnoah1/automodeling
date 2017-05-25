@@ -3,13 +3,11 @@
 # A Brock, 2016
 
 
-import argparse
 import math
 
 import lasagne
 import numpy as np
 import theano.tensor as T
-
 
 # Define the testing functions
 from recognize.classifier.utils import checkpoints
@@ -58,7 +56,7 @@ def main(data_path, model='VRN'):
     cfg = config_module.CONFIG
 
     # Find weights file
-    weights_fname = 'recognize/classifier/models/{model}.npz'.format(model=model)
+    weights_fname = 'models/{model}.npz'.format(model=model)
 
     # Get Model
     model = config_module.get_model()
@@ -120,8 +118,8 @@ def main(data_path, model='VRN'):
 
         # Get number of batches for this chunk
         num_batches = len(x_shared) // n_rotations
-        print(l_out[0])
-        print(pred[0])
+        print(l_out)
+        print(pred)
 
         # Prepare data
         tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
@@ -153,4 +151,4 @@ def main(data_path, model='VRN'):
 
 
 if __name__ == '__main__':
-    main('recognize/converter/tmp/voxel.npz')
+    main('../converter/tmp/voxel.npz')
