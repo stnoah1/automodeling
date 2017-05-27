@@ -19,6 +19,7 @@ class Project(TimeStampedModel):
             models.Index(fields=['code'], name='code_idx'),
         ]
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     ip = models.GenericIPAddressField('IP주소', null=True, blank=True)
     code = models.UUIDField('프로젝트코드', default=uuid.uuid4, editable=False)
 
