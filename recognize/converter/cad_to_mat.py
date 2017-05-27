@@ -29,4 +29,4 @@ def execute(file, res=32, num_rotate=12):
 
 
 if __name__ == '__main__':
-    execute('test_data/chair.stl')
+    execute('test_data/airplane.off')
