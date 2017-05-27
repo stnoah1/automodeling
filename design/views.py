@@ -30,15 +30,6 @@ def convert_view(request, code):
     }
     return Response(context)
 
-from design.common import get_client_ip
-from design.models import Project
-
-
-def home(request):
-    ip = get_client_ip(request)
-    project = Project.objects.create(ip=ip)
-    return redirect(reverse('design:home', kwargs={'pk': project.id}))
-
 
 class DesignView(TemplateView):
     template_name = 'design/design.html'
