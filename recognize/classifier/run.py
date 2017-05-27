@@ -3,17 +3,19 @@
 # A Brock, 2016
 
 
-import math
-
 import lasagne
 import numpy as np
+import os
+import theano
 import theano.tensor as T
 
 # Define the testing functions
 from recognize.classifier.utils import checkpoints
 
+WORKING_DIR = os.getcwd()
 
-def make_testing_functions(cfg, model):
+
+def classifing_function(cfg, model):
     # Input Array
     X = T.TensorType('float32', [False] * 5)('X')
 
@@ -26,19 +28,20 @@ def make_testing_functions(cfg, model):
     # Batch Parameters
     batch_index = T.iscalar('batch_index')
     test_batch_slice = slice(batch_index * cfg['n_rotations'], (batch_index + 1) * cfg['n_rotations'])
-    test_batch_i = batch_index
 
     # Get output
     y_hat_deterministic = lasagne.layers.get_output(l_out, X, deterministic=True)
 
-    # Average across rotation examples
-    pred = T.argmax(T.sum(y_hat_deterministic, axis=0))
-
     # Compile Functions
+    fc_vector = theano.function([batch_index], [T.sum(y_hat_deterministic, axis=0)], givens={
+        X: X_shared[test_batch_slice]
+    })
+
+    tfuncs = {'fc_vector': fc_vector}
     tvars = {'X': X,
              'X_shared': X_shared,
              }
-    return l_out, pred, tvars, model
+    return tfuncs, tvars, model
 
 
 # Main Function
@@ -46,109 +49,40 @@ class WrongModelError(object):
     pass
 
 
-def main(data_path, model='VRN'):
+def initialize(model='VRN'):
     if model == 'VRN':
         from recognize.classifier.models import VRN as config_module
     else:
         raise WrongModelError
 
-    # Load config module
     cfg = config_module.CONFIG
 
     # Find weights file
-    weights_fname = 'models/{model}.npz'.format(model=model)
+    weights_fname = os.path.join(WORKING_DIR, 'classifier', 'models', '{model}.npz'.format(model=model))
 
     # Get Model
     model = config_module.get_model()
 
     # Compile functions
-    print('Compiling theano functions...')
-    l_out, pred, tvars, model = make_testing_functions(cfg, model)
+    print('Compiling theano functions...!!')
+    tfuncs, tvars, model = classifing_function(cfg, model)
 
     # Load weights
-    metadata = checkpoints.load_weights(weights_fname, model['l_out'])
+    checkpoints.load_weights(weights_fname, model['l_out'])
 
-    # Check if previous best accuracy is in metadata from previous tests
-    best_acc = metadata['best_acc'] if 'best_acc' in metadata else 0
-    print('best accuracy = ' + str(best_acc))
+    return tfuncs, tvars
 
-    print('Testing...')
-    itr = 0
 
-    # Load testing data into memory
+def main(tvars, tfuncs, data_path):
     xt = np.asarray(np.load(data_path)['features'], dtype=np.float32)
+    x_shared = np.asarray(xt[0:12, :, :, :, :], dtype=np.float32)
 
-    # Get number of rotations to average across. If you want this to be different from
-    # the number of rotations specified in the config file, make sure to change the 
-    # indices of the test_batch_slice variable above, as well as which data file
-    # you're reading from.
-    n_rotations = cfg['n_rotations']
+    # Prepare data
+    tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
 
-    # Confusion Matrix: Currently not implemented as it doesn't print prettily,
-    # but easy to add in by uncommenting some of the commented lines in the loop.
-    confusion_matrix = np.zeros((40, 40), dtype=np.int)
-
-    # Determine chunk size
-    test_chunk_size = n_rotations * cfg['batches_per_chunk']
-
-    # Determine number of chunks
-    num_test_chunks = int(math.ceil(float(len(xt)) / test_chunk_size))
-
-    # Total number of test batches. Note that we're treating all the rotations
-    # of a single instance as a single batch. There's definitely a more efficient
-    # way to do this, and you'll want to be more efficient if you implement this in 
-    # a validation loop, but testing should be infrequent enough that the extra few minutes
-    # this costs is irrelevant.
-    num_test_batches = int(math.ceil(float(len(xt)) / float(n_rotations)))
-
-    # Prepare test error  
-    test_class_error = []
-
-    # Initialize test iteration counter
-    test_itr = 0
-
-    # Loop across chunks!
-    for chunk_index in range(num_test_chunks):
-
-        # Define upper index of chunk
-        upper_range = min(1, (chunk_index + 1) * test_chunk_size)
-
-        # Get chunks
-        x_shared = np.asarray(xt[chunk_index * test_chunk_size:upper_range, :, :, :, :], dtype=np.float32)
-
-        # Get number of batches for this chunk
-        num_batches = len(x_shared) // n_rotations
-        print(l_out)
-        print(pred)
-
-        # Prepare data
-        tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
-
-        # Loop across batches!
-        for bi in range(num_batches):
-            # Increment test iteration counter
-            test_itr += 1
-
-            # Test!
-            [batch_test_class_error, pred] = tfuncs['test_function'](bi)
-
-            # Record test results
-            test_class_error.append(batch_test_class_error)
-
-            # Optionally, update the confusion matrix
-            # confusion_matrix[pred,int(yt[cfg['n_rotations']*test_itr])]+=1
-
-    # Optionally, print confusion matrix
-    # print(confusion_matrix)
-
-    # Get total accuracy
-
-    # Optionally save best accuracy
-    # if t_class_error>best_acc:
-    # best_acc = t_class_error
-    # checkpoints.save_weights(weights_fname, models['l_out'],
-    # {'best_acc':best_acc})
+    return tfuncs['fc_vector'](0)[0].tolist()
 
 
 if __name__ == '__main__':
-    main('../converter/tmp/voxel.npz')
+    tfuncs, tvars = initialize(model='VRN')
+    main(tfuncs, tvars, '../converter/tmp/voxel.npz')
