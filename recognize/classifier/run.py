@@ -3,15 +3,16 @@
 # A Brock, 2016
 
 
-import math
-
-import theano
 import lasagne
 import numpy as np
+import os
+import theano
 import theano.tensor as T
 
 # Define the testing functions
 from recognize.classifier.utils import checkpoints
+
+WORKING_DIR = os.getcwd()
 
 
 def make_testing_functions(cfg, model):
@@ -20,12 +21,6 @@ def make_testing_functions(cfg, model):
 
     # Shared Variable for input array
     X_shared = lasagne.utils.shared_empty(5, dtype='float32')
-
-    # Class Vector
-    y = T.TensorType('int32', [False] * 1)('y')
-
-    # Shared Variable for class vector
-    y_shared = lasagne.utils.shared_empty(1, dtype='float32')
 
     # Output layer
     l_out = model['l_out']
@@ -38,21 +33,15 @@ def make_testing_functions(cfg, model):
     y_hat_deterministic = lasagne.layers.get_output(l_out, X, deterministic=True)
 
     # Average across rotation examples
-    pred = T.argmax(T.sum(y_hat_deterministic, axis=0))
-
-    # Get error rate
-    classifier_test_error_rate = T.cast(T.mean(T.neq(pred, T.mean(y, dtype='int32'))), 'float32')
+    # pred = T.argmax(T.sum(y_hat_deterministic, axis=0))
 
     # Compile Functions
-    test_error_fn = theano.function([batch_index], [classifier_test_error_rate, pred], givens={
-        X: X_shared[test_batch_slice],
-        y: T.cast(y_shared[test_batch_slice], 'int32')
+    fc_vector = theano.function([batch_index], [T.sum(y_hat_deterministic, axis=0)], givens={
+        X: X_shared[test_batch_slice]
     })
-    tfuncs = {'test_function': test_error_fn}
+    tfuncs = {'fc_vector': fc_vector}
     tvars = {'X': X,
-             'y': y,
              'X_shared': X_shared,
-             'y_shared': y_shared,
              }
     return tfuncs, tvars, model
 
@@ -62,7 +51,7 @@ class WrongModelError(object):
     pass
 
 
-def main(data_path, model='VRN'):
+def main(data_path=os.path.join(WORKING_DIR, 'converter', 'tmp', 'voxel.npz'), model='VRN'):
     if model == 'VRN':
         from recognize.classifier.models import VRN as config_module
     else:
@@ -71,34 +60,28 @@ def main(data_path, model='VRN'):
     cfg = config_module.CONFIG
 
     # Find weights file
-    weights_fname = 'models/{model}.npz'.format(model=model)
+    weights_fname = os.path.join(WORKING_DIR, 'classifier', 'models', '{model}.npz'.format(model=model))
 
     # Get Model
     model = config_module.get_model()
 
     # Compile functions
-    print('Compiling theano functions...')
+    print('Compiling theano functions...!!')
     tfuncs, tvars, model = make_testing_functions(cfg, model)
 
     # Load weights
     checkpoints.load_weights(weights_fname, model['l_out'])
 
     xt = np.asarray(np.load(data_path)['features'], dtype=np.float32)
-    yt = np.asarray(np.load(data_path)['targets'], dtype=np.float32)
 
     n_rotations = cfg['n_rotations']
 
     x_shared = np.asarray(xt[0:n_rotations, :, :, :, :], dtype=np.float32)
-    y_shared = np.asarray(yt[0:n_rotations], dtype=np.float32)
 
     # Prepare data
     tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
-    tvars['y_shared'].set_value(y_shared, borrow=True)
 
-    # Loop across batches!
-
-    [_, pred] = tfuncs['test_function'](0)
-    print(pred)
+    return tfuncs['fc_vector'](0)[0].tolist()
 
 
 if __name__ == '__main__':
