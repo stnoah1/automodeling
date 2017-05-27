@@ -4,7 +4,7 @@
   "description": "AUTOMODELING",
   "main": "/",
   "dependencies": {
-    "three-js": ">=79.0.0"
+    "three": "^0.84.0"
   },
   "repository": {
     "type": "git",
