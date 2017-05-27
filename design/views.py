@@ -23,21 +23,12 @@ def convert_view(request, code):
     # - Return Sample
     context = {
         'class_info': [
-            {'class': "chair", 'confidence_rate': 0.93},
+            {'class': "airplane", 'confidence_rate': 0.93},
             {'class': "desk", 'confidence_rate': 0.07}
         ],
-        'related_models': ['chair_0001', 'chair_0002']
+        'related_models': ['airplane_0003', 'airplane_0007']
     }
     return Response(context)
-
-from design.common import get_client_ip
-from design.models import Project
-
-
-def home(request):
-    ip = get_client_ip(request)
-    project = Project.objects.create(ip=ip)
-    return redirect(reverse('design:home', kwargs={'pk': project.id}))
 
 
 class DesignView(TemplateView):
