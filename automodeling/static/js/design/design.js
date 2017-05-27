@@ -7,6 +7,7 @@ function loadSTL(stl_data) {
         mesh.rotation.set(-Math.PI / 2, 0, 0);
         mesh.scale.set(1000, 1000, 1000);
         scene.add(mesh);
+        render();
     });
 }
 

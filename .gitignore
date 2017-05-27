@@ -173,3 +173,4 @@ collected_static
 /original_datasets
 .DS_store
 bin
+automodeling/static/data/stl
