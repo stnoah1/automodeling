@@ -23,10 +23,10 @@ def convert_view(request, code):
     # - Return Sample
     context = {
         'class_info': [
-            {'class': "chair", 'confidence_rate': 0.93},
+            {'class': "airplane", 'confidence_rate': 0.93},
             {'class': "desk", 'confidence_rate': 0.07}
         ],
-        'related_models': ['chair_0001', 'chair_0002']
+        'related_models': ['airplane_0003', 'airplane_0007']
     }
     return Response(context)
 
