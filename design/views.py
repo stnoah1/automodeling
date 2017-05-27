@@ -14,7 +14,7 @@ def home(request):
     return redirect(reverse('design:home', kwargs={'code': project.code}))
 
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def convert_view(request, code):
     # TODO : CONVERT
     # - Function Execute Sample
@@ -23,10 +23,10 @@ def convert_view(request, code):
     # - Return Sample
     context = {
         'class_info': [
-            {'class_id': 4, 'confidence_rate': 0.93},
-            {'class_id': 6, 'confidence_rate': 0.07}
+            {'class': "chair", 'confidence_rate': 0.93},
+            {'class': "desk", 'confidence_rate': 0.07}
         ],
-        'related_models': [34, 22, 11, 33, 44]
+        'related_models': ['chair_0001', 'chair_0002']
     }
     return Response(context)
 
