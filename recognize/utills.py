@@ -1,9 +1,6 @@
-import os
-
 import numpy as np
 
-from recognize.classifier import run
-from recognize.classifier.run import initialize
+from recognize.classifier import run, initialize
 from recognize.converter import data2npz
 
 MODEL_NET_40_CLASS = ['airplane', 'bathtub', 'bed', 'bench', 'bookshelf', 'bottle', 'bowl', 'car', 'chair', 'cone',
@@ -12,15 +9,13 @@ MODEL_NET_40_CLASS = ['airplane', 'bathtub', 'bed', 'bench', 'bookshelf', 'bottl
                       'range_hood', 'sink', 'sofa', 'stairs', 'stool', 'table', 'tent', 'toilet', 'tv_stand', 'vase',
                       'wardrobe', 'xbox']
 
-WORKING_DIR = os.getcwd()
-
 
 def get_model_info(tvars, tfuncs, data):
     npz_file = data2npz(data)
 
-    fc_vector = run.main(tvars, tfuncs, npz_file)
-    confidence_rate = softmax(fc_vector)
+    fc_vector = run(tvars, tfuncs, npz_file)
     related_models = get_neighbor_model(fc_vector)
+    confidence_rate = softmax(fc_vector)
 
     return {
         'class_info': [

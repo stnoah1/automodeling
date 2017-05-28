@@ -1,40 +1,16 @@
-
-import logging
 import _pickle as pickle
+import logging
 import warnings
-import numpy as np
-
-from path import Path
 
 import lasagne
-
-def save_weights(fname, l_out, metadata=None):
-    """ assumes all params have unique names.
-    """
-    # Includes batchnorm params now
-    params = lasagne.layers.get_all_params(l_out,trainable=True)+[x for x in lasagne.layers.get_all_params(l_out) if x.name[-4:]=='mean' or x.name[-7:]=='inv_std']
-    names = [par.name for par in params]
-    if len(names) != len(set(names)):
-        raise ValueError('need unique param names')
-    param_dict = { param.name : param.get_value(borrow=False)
-            for param in params }
-    if metadata is not None:
-        param_dict['metadata'] = pickle.dumps(metadata)
-    logging.info('saving {} parameters to {}'.format(len(params), fname))
-    # try to avoid half-written files
-    fname = Path(fname)
-    if fname.exists():
-        tmp_fname = Path(fname.stripext() + '.tmp.npz') # TODO yes, this is a hack
-        np.savez_compressed(str(tmp_fname), **param_dict)
-        tmp_fname.rename(fname)
-    else:
-        np.savez_compressed(str(fname), **param_dict)
+import numpy as np
 
 
 def load_weights(fname, l_out):
-    params = lasagne.layers.get_all_params(l_out,trainable=True)+[x for x in lasagne.layers.get_all_params(l_out) if x.name[-4:]=='mean' or x.name[-7:]=='inv_std']
-    names = [ par.name for par in params ]
-    if len(names)!=len(set(names)):
+    params = lasagne.layers.get_all_params(l_out, trainable=True) + \
+             [x for x in lasagne.layers.get_all_params(l_out) if x.name[-4:] == 'mean' or x.name[-7:] == 'inv_std']
+    names = [par.name for par in params]
+    if len(names) != len(set(names)):
         raise ValueError('need unique param names')
 
     param_dict = np.load(fname)

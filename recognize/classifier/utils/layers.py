@@ -1,18 +1,9 @@
-### Voxel-Based VAE Layers
-# A Brock 2016
-# Originally adopted from Voxnet
-
-
-
-import numpy as np
-
 import lasagne
-from lasagne.layers import Layer
-
+import numpy as np
 import theano.tensor as T
-
-from theano.sandbox.cuda import dnn
+from lasagne.layers import Layer
 from lasagne.utils import as_tuple
+from theano.sandbox.cuda import dnn
 
 __all__ = [
     'Conv3dDNNLayer',
@@ -54,7 +45,8 @@ class Conv3dDNNLayer(Layer):
 
         if border_mode is not None and pad is not None:
             raise RuntimeError(
-                "You cannot specify both 'border_mode' and 'pad'. To avoid ambiguity, please specify only one of them.")
+                "You cannot specify both 'border_mode' and 'pad'. To avoid ambiguity, please specify only one of them."
+            )
         elif border_mode is None and pad is None:
             # no option specified, default to valid mode
             self.pad = (0, 0, 0)
@@ -138,7 +130,7 @@ class Conv3dDNNLayer(Layer):
         return self.nonlinearity(activation)
 
 
-# Repeat upscale 3d layer       
+# Repeat upscale 3d layer
 class Upscale3DLayer(Layer):
     def __init__(self, incoming, scale_factor, **kwargs):
         super(Upscale3DLayer, self).__init__(incoming, **kwargs)

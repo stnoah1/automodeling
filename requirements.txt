@@ -1,3 +1,5 @@
+theano
+lasagne
 oct2py
 trimesh
 scipy

@@ -1,50 +1,39 @@
-###
-# 45-Layer Voxception-ResNet Config File
-# A Brock
-#
-# This file 
-import theano
-import theano.tensor as T
-import numpy as np
-
 import lasagne
 import lasagne.layers
 
-# If you for some reason don't use cuDNN:
-# 1. Use cuDNN.
-# 2. If that fails, replace all the DNN layers with another 3D conv layer.
 import lasagne.layers.dnn
+import numpy as np
+import theano
+import theano.tensor as T
+from lasagne.init import Orthogonal as initmethod
 
-# I use a lot of aliases to help keep my code more compact;
-# consider changing these back to their full callouts if you like.
 from lasagne.layers import ElemwiseSumLayer as ESL
 from lasagne.layers import NonlinearityLayer as NL
-from lasagne.init import Orthogonal as initmethod
-from lasagne.nonlinearities import elu, identity
 from lasagne.layers import batch_norm as BN
-
+from lasagne.nonlinearities import elu, identity
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
 lr_schedule = {0: 0.002, 12: 0.0002}
 
-CONFIG = {'batch_size': 1,
-       'learning_rate': lr_schedule,
-       'decay_rate': 0,
-       'reg': 0.001,
-       'momentum': 0.9,
-       'dims': (32, 32, 32),
-       'n_channels': 1,
-       'n_classes': 40,
-       'batches_per_chunk': 1,
-       'max_epochs': 250,
-       'max_jitter_ij': 2,
-       'max_jitter_k': 2,
-       'n_rotations': 12,
-       'checkpoint_every_nth': 2,
-          }
+CONFIG = {
+    'batch_size': 1,
+    'learning_rate': lr_schedule,
+    'decay_rate': 0,
+    'reg': 0.001,
+    'momentum': 0.9,
+    'dims': (32, 32, 32),
+    'n_channels': 1,
+    'n_classes': 40,
+    'batches_per_chunk': 1,
+    'max_epochs': 250,
+    'max_jitter_ij': 2,
+    'max_jitter_k': 2,
+    'n_rotations': 12,
+    'checkpoint_every_nth': 2,
+}
 
 
-# Convenience function for creating inception blocks.  
+# Convenience function for creating inception blocks.
 def InceptionLayer(incoming, param_dict, block_name):
     branch = [0] * len(param_dict)
     # Loop across branches
@@ -70,13 +59,13 @@ def InceptionLayer(incoming, param_dict, block_name):
                 nonlinearity=dict['nonlinearity'][j])
             # Apply Batchnorm
             branch[i] = lasagne.layers.batch_norm(branch[i], name=block_name + '_bnorm_' + str(i) + '_' + str(j)) if \
-            dict['bnorm'][j] else branch[i]
+                dict['bnorm'][j] else branch[i]
             # Concatenate Sublayers
 
     return lasagne.layers.ConcatLayer(incomings=branch, name=block_name)
 
 
-# Vanilla Resnet layer with ELUs    
+# Vanilla Resnet layer with ELUs
 def ResLayer(incoming, IB):
     return NL(ESL([IB, incoming]), elu)
 
@@ -102,7 +91,7 @@ class IfElseDropLayer(lasagne.layers.Layer):
                 T.zeros(input.shape)
             )
 
-        # Pre-activation stochastically-dropped ResNet wrapper
+            # Pre-activation stochastically-dropped ResNet wrapper
 
 
 def ResDrop(incoming, IB, p):
