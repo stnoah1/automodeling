@@ -1,8 +1,3 @@
-###
-# Discriminative Voxel-Based ConvNet Training Function
-# A Brock, 2016
-
-
 import lasagne
 import numpy as np
 import os
@@ -73,7 +68,7 @@ def initialize(model='VRN'):
     return tfuncs, tvars
 
 
-def main(tvars, tfuncs, data_path):
+def run(tvars, tfuncs, data_path):
     xt = np.asarray(np.load(data_path)['features'], dtype=np.float32)
     x_shared = np.asarray(xt[0:12, :, :, :, :], dtype=np.float32)
 
@@ -85,4 +80,4 @@ def main(tvars, tfuncs, data_path):
 
 if __name__ == '__main__':
     tfuncs, tvars = initialize(model='VRN')
-    main(tfuncs, tvars, '../converter/tmp/voxel.npz')
+    run(tfuncs, tvars, '../converter/tmp/voxel.npz')
