@@ -1,3 +1,5 @@
+oct2py
+trimesh
 scipy
 numpy
 Django>=1.11
