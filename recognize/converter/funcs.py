@@ -80,8 +80,8 @@ def mat2npz(mat_file, npz_file=None, res=RESOLUTION, num_rotate=NUM_ROTATE, dele
     return npz_file
 
 
-def data2npz(data):
-    stl_file = data2stl(data)
+def data2npz(stl_data):
+    stl_file = data2stl(stl_data)
     off_file = stl2off(stl_file)
     mat_file = off2mat(off_file)
     return mat2npz(mat_file)

@@ -14,8 +14,8 @@ MODEL_NET_40_CLASS = ['airplane', 'bathtub', 'bed', 'bench', 'bookshelf', 'bottl
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-def get_model_info(tvars, tfuncs, data):
-    npz_file = data2npz(data)
+def get_model_info(tvars, tfuncs, stl_data):
+    npz_file = data2npz(stl_data)
 
     fc_vector = run(tvars, tfuncs, npz_file)
     related_models = get_related_models(fc_vector)
@@ -48,4 +48,6 @@ def softmax(w, t=1.0):
 
 if __name__ == '__main__':
     tfuncs, tvars = initialize(model='VRN')
-    print(get_model_info(tfuncs, tvars, 'test_data/airplane.off'))
+    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'stl_sample.txt'), 'r') as f:
+        data = f.read()
+    print(get_model_info(tfuncs, tvars, data))
