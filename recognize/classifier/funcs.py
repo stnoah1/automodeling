@@ -10,7 +10,7 @@ from recognize.classifier.utils import checkpoints
 WORKING_DIR = os.getcwd()
 
 
-def classifing_function(cfg, model):
+def classifying_function(cfg, model):
     # Input Array
     X = T.TensorType('float32', [False] * 5)('X')
 
@@ -60,7 +60,7 @@ def initialize(model='VRN'):
 
     # Compile functions
     print('Compiling theano functions...!!')
-    tfuncs, tvars, model = classifing_function(cfg, model)
+    tfuncs, tvars, model = classifying_function(cfg, model)
 
     # Load weights
     checkpoints.load_weights(weights_fname, model['l_out'])
