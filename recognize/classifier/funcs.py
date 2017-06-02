@@ -7,7 +7,7 @@ import theano.tensor as T
 # Define the testing functions
 from recognize.classifier.utils import checkpoints
 
-WORKING_DIR = os.getcwd()
+CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def classifying_function(cfg, model):
@@ -53,7 +53,7 @@ def initialize(model='VRN'):
     cfg = config_module.CONFIG
 
     # Find weights file
-    weights_fname = os.path.join(WORKING_DIR, 'classifier', 'models', '{model}.npz'.format(model=model))
+    weights_fname = os.path.join(CURRENT_DIR, 'models', '{model}.npz'.format(model=model))
 
     # Get Model
     model = config_module.get_model()
@@ -64,7 +64,6 @@ def initialize(model='VRN'):
 
     # Load weights
     checkpoints.load_weights(weights_fname, model['l_out'])
-
     return tfuncs, tvars
 
 

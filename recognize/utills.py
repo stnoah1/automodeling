@@ -14,18 +14,20 @@ MODEL_NET_40_CLASS = ['airplane', 'bathtub', 'bed', 'bench', 'bookshelf', 'bottl
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
-def get_model_info(tvars, tfuncs, stl_data):
+def get_model_info(tfuncs, tvars, stl_data):
     npz_file = data2npz(stl_data)
-
     fc_vector = run(tvars, tfuncs, npz_file)
     related_models = get_related_models(fc_vector)
     confidence_rate = softmax(fc_vector)
-
-    return {
-        'class_info': [
+    class_info = sorted(
+        [
             {'class_id': MODEL_NET_40_CLASS[index], 'confidence_rate': value}
             for index, value in enumerate(confidence_rate)
         ],
+        key=lambda k: k['confidence_rate'],
+        reverse=True)
+    return {
+        'class_info': class_info,
         'related_models': related_models
     }
 
@@ -47,7 +49,12 @@ def softmax(w, t=1.0):
 
 
 if __name__ == '__main__':
+    from pprint import pprint
+
     tfuncs, tvars = initialize(model='VRN')
-    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'stl_sample.txt'), 'r') as f:
+    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'test.txt'), 'r') as f:
         data = f.read()
-    print(get_model_info(tfuncs, tvars, data))
+    pprint(get_model_info(tfuncs, tvars, data))
+    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'testtest.txt'), 'r') as f:
+        data = f.read()
+    pprint(get_model_info(tfuncs, tvars, data))
