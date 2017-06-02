@@ -39,7 +39,14 @@ def stl2off(stl_file, off_file=None, delete_file=True):
 def off2mat(off_file, res=RESOLUTION, num_rotate=NUM_ROTATE, delete_file=True):
     file_format_check(off_file, '.off')
     octave.addpath(os.path.join(CURRENT_DIR, 'utills'))
-    mat_file = octave.off2voxel(off_file, res, num_rotate)
+    octave.eval('clear', 'all')
+    mat_file = octave.eval(
+        'off2voxel(\'{off_file}\', {res}, {num_rotate});'.format(
+            off_file=off_file,
+            res=res,
+            num_rotate=num_rotate
+        )
+    )
     if delete_file:
         os.remove(off_file)
     return mat_file
@@ -80,8 +87,8 @@ def mat2npz(mat_file, npz_file=None, res=RESOLUTION, num_rotate=NUM_ROTATE, dele
     return npz_file
 
 
-def data2npz(data):
-    stl_file = data2stl(data)
+def data2npz(stl_data):
+    stl_file = data2stl(stl_data)
     off_file = stl2off(stl_file)
     mat_file = off2mat(off_file)
     return mat2npz(mat_file)
@@ -97,15 +104,12 @@ if __name__ == '__main__':
     import time
 
     tic = time.clock()
-    with open(os.path.join(CURRENT_DIR, 'tmp', 'stl_sample.txt'), 'r') as f:
-        data = f.read()
-    stl_file = data2stl(data)
-    print('stl conversion success')
-    off_file = stl2off(stl_file)
+    stl_file = os.path.join(CURRENT_DIR, 'tmp', 'airplane_0004.stl')
+    off_file = stl2off(stl_file, delete_file=False)
     print('off conversion success')
-    mat_file = off2mat(off_file)
+    mat_file = off2mat(off_file, delete_file=False)
     print('mat conversion success')
-    mat2npz(mat_file)
+    mat2npz(mat_file, delete_file=False)
     print('npz conversion success')
     toc = time.clock()
     print(toc - tic)

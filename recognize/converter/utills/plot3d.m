@@ -1,4 +1,5 @@
 function [] = plot3d(mat_file='../tmp/voxel.mat', rotate_num=1)
+  clf;
   setenv("GNUTERM", "qt")
   voxel = load(mat_file);
   voxel_each = double(squeeze(voxel.result(1, rotate_num, :, :, :)));
