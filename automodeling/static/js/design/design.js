@@ -20,6 +20,7 @@ function loadSTL(stl_data) {
     loader.load(stl_data, function (geometry) {
         var mesh = new THREE.Mesh(geometry, material);
 
+        // SCALING
         var box = new THREE.Box3();
         box.setFromObject(mesh);
         var stl_length = getDiagonalEdge(box.max.x, box.max.y, box.max.z, box.min.x, box.min.y, box.min.z);

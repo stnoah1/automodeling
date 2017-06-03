@@ -5,6 +5,7 @@ var mouse, raycaster, isShiftDown = false;
 var rollOverMesh, rollOverMaterial;
 var cubeGeo, cubeMaterial;
 var objects = [];
+var controls;
 init();
 render();
 function init() {
@@ -60,6 +61,9 @@ function init() {
     renderer.setClearColor(0xf0f0f0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
+    controls = new THREE.OrbitControls(camera);
+    controls.addEventListener('change', render);
+
     document.addEventListener('mousemove', onDocumentMouseMove, false);
     document.addEventListener('mousedown', onDocumentMouseDown, false);
     document.addEventListener('keydown', onDocumentKeyDown, false);
