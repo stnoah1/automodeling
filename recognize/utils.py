@@ -16,7 +16,7 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def get_model_info(tfuncs, tvars, stl_data):
     print("GET_MODEL_INFO:npz_file")
-    npz_file = data2npz(stl_data)
+    npz_file = data2npz(stl_data, rotate=True)
     print("GET_MODEL_INFO:fc_vector")
     fc_vector = run(tvars, tfuncs, npz_file)
     print("GET_MODEL_INFO:related_models")
