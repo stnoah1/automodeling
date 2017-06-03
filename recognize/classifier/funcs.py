@@ -33,9 +33,7 @@ def classifying_function(cfg, model):
     })
     # print('CLASSIFYING_FUNCTION: Compiling finished')
     tfuncs = {'fc_vector': fc_vector}
-    tvars = {'X': X,
-             'X_shared': X_shared,
-             }
+    tvars = {'X': X, 'X_shared': X_shared}
     return tfuncs, tvars, model
 
 
@@ -59,23 +57,20 @@ def initialize(model='VRN'):
     model = config_module.get_model()
 
     # Compile functions
-    # print('INITIALIZE: Compiling theano functions...!!')
     tfuncs, tvars, model = classifying_function(cfg, model)
 
-    # print('INITIALIZE: Load weights')
     checkpoints.load_weights(weights_fname, model['l_out'])
-    # print('INITIALIZE: All weights loaded')
     return tfuncs, tvars
 
 
-def run(tvars, tfuncs, data_path):
-    # print('RUN: np x loading started')
+def run(tvars, tfuncs, data_path, delete_file=True):
     xt = np.asarray(np.load(data_path)['features'], dtype=np.float32)
     x_shared = np.asarray(xt[0:12, :, :, :, :], dtype=np.float32)
 
     # print('RUN: Prepare data')
     tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
-    # print('RUN: Prepare data finished')
+    if delete_file:
+        os.remove(data_path)
     return tfuncs['fc_vector'](0)[0].tolist()
 
 
