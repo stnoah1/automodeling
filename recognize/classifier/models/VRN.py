@@ -1,7 +1,6 @@
 import lasagne
 import lasagne.layers
 
-import lasagne.layers.dnn
 import numpy as np
 import theano
 import theano.tensor as T
@@ -39,7 +38,7 @@ def InceptionLayer(incoming, param_dict, block_name):
     # Loop across branches
     for i, dict in enumerate(param_dict):
         for j, style in enumerate(dict['style']):  # Loop up branch
-            branch[i] = lasagne.layers.dnn.Conv3DDNNLayer(
+            branch[i] = lasagne.layers.Conv3DLayer(
                 incoming=incoming if j == 0 else branch[i],
                 num_filters=dict['num_filters'][j],
                 filter_size=dict['filter_size'][j],
@@ -49,7 +48,7 @@ def InceptionLayer(incoming, param_dict, block_name):
                 nonlinearity=dict['nonlinearity'][j],
                 name=block_name + '_' + str(i) + '_' + str(
                     j)) if style == 'convolutional' else lasagne.layers.NonlinearityLayer(
-                lasagne.layers.dnn.Pool3DDNNLayer(
+                lasagne.layers.Pool3DLayer(
                     incoming=incoming if j == 0 else branch[i],
                     pool_size=dict['filter_size'][j],
                     mode=dict['mode'][j],
@@ -108,7 +107,7 @@ def get_model():
     dims, n_channels, n_classes = tuple(CONFIG['dims']), CONFIG['n_channels'], CONFIG['n_classes']
     shape = (None, n_channels) + dims
     l_in = lasagne.layers.InputLayer(shape=shape)
-    l_conv0 = lasagne.layers.dnn.Conv3DDNNLayer(
+    l_conv0 = lasagne.layers.Conv3DLayer(
         incoming=l_in,
         num_filters=32,
         filter_size=(3, 3, 3),
@@ -449,7 +448,7 @@ def get_model():
                                            'style': ['convolutional', 'pool'],
                                            'bnorm': [0, 1]}],
                               block_name='conv16')
-    l_conv17 = ResDropNoPre(l_conv16, BN(lasagne.layers.dnn.Conv3DDNNLayer(
+    l_conv17 = ResDropNoPre(l_conv16, BN(lasagne.layers.Conv3DLayer(
         incoming=l_conv16,
         num_filters=512,
         filter_size=(3, 3, 3),

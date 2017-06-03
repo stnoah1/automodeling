@@ -11,27 +11,27 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def classifying_function(cfg, model):
-    # Input Array
+    # print('CLASSIFYING_FUNCTION: Input Array')
     X = T.TensorType('float32', [False] * 5)('X')
 
-    # Shared Variable for input array
+    # print('CLASSIFYING_FUNCTION: Shared Variable for input array')
     X_shared = lasagne.utils.shared_empty(5, dtype='float32')
 
-    # Output layer
+    # print('CLASSIFYING_FUNCTION: Output layer')
     l_out = model['l_out']
 
-    # Batch Parameters
+    # print('CLASSIFYING_FUNCTION: Batch Parameters')
     batch_index = T.iscalar('batch_index')
     test_batch_slice = slice(batch_index * cfg['n_rotations'], (batch_index + 1) * cfg['n_rotations'])
 
-    # Get output
+    # print('CLASSIFYING_FUNCTION: Get output')
     y_hat_deterministic = lasagne.layers.get_output(l_out, X, deterministic=True)
 
-    # Compile Functions
+    # print('CLASSIFYING_FUNCTION: Compile Functions')
     fc_vector = theano.function([batch_index], [T.sum(y_hat_deterministic, axis=0)], givens={
         X: X_shared[test_batch_slice]
     })
-
+    # print('CLASSIFYING_FUNCTION: Compiling finished')
     tfuncs = {'fc_vector': fc_vector}
     tvars = {'X': X,
              'X_shared': X_shared,
@@ -59,21 +59,23 @@ def initialize(model='VRN'):
     model = config_module.get_model()
 
     # Compile functions
-    print('Compiling theano functions...!!')
+    # print('INITIALIZE: Compiling theano functions...!!')
     tfuncs, tvars, model = classifying_function(cfg, model)
 
-    # Load weights
+    # print('INITIALIZE: Load weights')
     checkpoints.load_weights(weights_fname, model['l_out'])
+    # print('INITIALIZE: All weights loaded')
     return tfuncs, tvars
 
 
 def run(tvars, tfuncs, data_path):
+    # print('RUN: np x loading started')
     xt = np.asarray(np.load(data_path)['features'], dtype=np.float32)
     x_shared = np.asarray(xt[0:12, :, :, :, :], dtype=np.float32)
 
-    # Prepare data
+    # print('RUN: Prepare data')
     tvars['X_shared'].set_value(4.0 * x_shared - 1.0, borrow=True)
-
+    # print('RUN: Prepare data finished')
     return tfuncs['fc_vector'](0)[0].tolist()
 
 

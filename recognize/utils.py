@@ -1,4 +1,6 @@
 import os
+import time
+from pprint import pprint
 
 import numpy as np
 
@@ -15,10 +17,15 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def get_model_info(tfuncs, tvars, stl_data):
+    # print("GET_MODEL_INFO: npz_file")
     npz_file = data2npz(stl_data, rotate=True)
+    # print("GET_MODEL_INFO: fc_vector")
     fc_vector = run(tvars, tfuncs, npz_file)
+    # print("GET_MODEL_INFO: related_models")
     related_models = get_related_models(fc_vector)
+    # print("GET_MODEL_INFO: confidence_rate")
     confidence_rate = softmax(fc_vector)
+    # print("GET_MODEL_INFO: class_info")
     class_info = sorted(
         [
             {'class_id': MODEL_NET_40_CLASS[index], 'confidence_rate': value}
@@ -48,13 +55,17 @@ def softmax(w, t=1.0):
     return dist
 
 
-if __name__ == '__main__':
-    from pprint import pprint
+def test(*path):
+    start = time.time()
+    with open(os.path.join(*path), 'r') as f:
+        data = f.read()
+    pprint(get_model_info(tfuncs, tvars, data))
+    end = time.time()
+    print("MAIN: Run time: {}".format(str(end - start)))
 
+
+if __name__ == '__main__':
     tfuncs, tvars = initialize(model='VRN')
-    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'nice_chair.txt'), 'r') as f:
-        data = f.read()
-    pprint(get_model_info(tfuncs, tvars, data))
-    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'testtest.txt'), 'r') as f:
-        data = f.read()
-    pprint(get_model_info(tfuncs, tvars, data))
+    print('MAIN: Initializing finished')
+    test(CURRENT_DIR, 'converter', 'tmp', 'nice_chair.txt')
+    test(CURRENT_DIR, 'converter', 'tmp', 'nice_chair.txt')
