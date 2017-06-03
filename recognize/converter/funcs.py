@@ -38,7 +38,7 @@ def stl2off(stl_file, off_file=None, delete_file=True):
 
 def off2mat(off_file, res=RESOLUTION, num_rotate=NUM_ROTATE, delete_file=True):
     file_format_check(off_file, '.off')
-    octave.addpath(os.path.join(CURRENT_DIR, 'utills'))
+    octave.addpath(os.path.join(CURRENT_DIR, 'utils'))
     octave.eval('clear', 'all')
     mat_file = octave.eval(
         'off2voxel(\'{off_file}\', {res}, {num_rotate});'.format(

@@ -50,11 +50,7 @@ def softmax(w, t=1.0):
 
 if __name__ == '__main__':
     from pprint import pprint
-
     tfuncs, tvars = initialize(model='VRN')
-    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'test.txt'), 'r') as f:
-        data = f.read()
-    pprint(get_model_info(tfuncs, tvars, data))
-    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'testtest.txt'), 'r') as f:
+    with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'nice_chair.txt'), 'r') as f:
         data = f.read()
     pprint(get_model_info(tfuncs, tvars, data))
