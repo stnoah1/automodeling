@@ -1,3 +1,4 @@
+import math
 import os
 import uuid
 from os.path import splitext
@@ -5,6 +6,7 @@ from os.path import splitext
 import numpy as np
 import scipy.io
 from oct2py import octave
+from stl import mesh
 from trimesh import load_mesh
 from trimesh.io.export import export_off
 
@@ -21,6 +23,17 @@ def data2stl(data, stl_file=os.path.join(CURRENT_DIR, 'tmp', '{stl_file}.stl'.fo
     with open(stl_file, "w") as f:
         f.write(data)
     return stl_file
+
+
+def rotate_stl(stl_file, axis, degree, output_file=None, delete_file=True):
+    if output_file is None:
+        output_file = stl_file.replace('.stl', '_rotate.stl')
+    stl_mesh = mesh.Mesh.from_file(stl_file)
+    stl_mesh.rotate(axis, math.radians(degree))
+    stl_mesh.save(output_file)
+    if delete_file:
+        os.remove(stl_file)
+    return output_file
 
 
 def stl2off(stl_file, off_file=None, delete_file=True):
@@ -87,8 +100,10 @@ def mat2npz(mat_file, npz_file=None, res=RESOLUTION, num_rotate=NUM_ROTATE, dele
     return npz_file
 
 
-def data2npz(stl_data):
+def data2npz(stl_data, rotate=False):
     stl_file = data2stl(stl_data)
+    if rotate:
+        stl_file=rotate_stl(stl_file, axis=[0.5, 0.0, 0.0], degree=90)
     off_file = stl2off(stl_file)
     mat_file = off2mat(off_file)
     return mat2npz(mat_file)
@@ -102,9 +117,8 @@ def file_format_check(file, file_format):
 
 if __name__ == '__main__':
     import time
-
     tic = time.clock()
-    stl_file = os.path.join(CURRENT_DIR, 'tmp', 'airplane_0004.stl')
+    stl_file = os.path.join(CURRENT_DIR, 'tmp', 'best_chair.stl')
     off_file = stl2off(stl_file, delete_file=False)
     print('off conversion success')
     mat_file = off2mat(off_file, delete_file=False)
