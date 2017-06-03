@@ -15,10 +15,15 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def get_model_info(tfuncs, tvars, stl_data):
+    print("GET_MODEL_INFO:npz_file")
     npz_file = data2npz(stl_data)
+    print("GET_MODEL_INFO:fc_vector")
     fc_vector = run(tvars, tfuncs, npz_file)
+    print("GET_MODEL_INFO:related_models")
     related_models = get_related_models(fc_vector)
+    print("GET_MODEL_INFO:confidence_rate")
     confidence_rate = softmax(fc_vector)
+    print("GET_MODEL_INFO:class_info")
     class_info = sorted(
         [
             {'class_id': MODEL_NET_40_CLASS[index], 'confidence_rate': value}
@@ -50,7 +55,11 @@ def softmax(w, t=1.0):
 
 if __name__ == '__main__':
     from pprint import pprint
+    print('MAIN:Initializing started')
     tfuncs, tvars = initialize(model='VRN')
+    print('MAIN:Initializing finished')
     with open(os.path.join(CURRENT_DIR, 'converter', 'tmp', 'nice_chair.txt'), 'r') as f:
         data = f.read()
+        print('MAIN:Data loaded')
     pprint(get_model_info(tfuncs, tvars, data))
+    print('MAIN:Model info loaded')
