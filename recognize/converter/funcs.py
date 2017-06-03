@@ -103,7 +103,7 @@ def mat2npz(mat_file, npz_file=None, res=RESOLUTION, num_rotate=NUM_ROTATE, dele
 def data2npz(stl_data, rotate=False):
     stl_file = data2stl(stl_data)
     if rotate:
-        stl_file=rotate_stl(stl_file, axis=[0.5, 0.0, 0.0], degree=90)
+        stl_file = rotate_stl(stl_file, axis=[0.5, 0.0, 0.0], degree=90)
     off_file = stl2off(stl_file)
     mat_file = off2mat(off_file)
     return mat2npz(mat_file)
@@ -117,6 +117,7 @@ def file_format_check(file, file_format):
 
 if __name__ == '__main__':
     import time
+
     tic = time.clock()
     stl_file = os.path.join(CURRENT_DIR, 'tmp', 'best_chair.stl')
     off_file = stl2off(stl_file, delete_file=False)
