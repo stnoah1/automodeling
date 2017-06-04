@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-from recognize.classifier import run, initialize
+from recognize.classifier import run
 from recognize.converter import off2mat, mat2npz, stl2off
 
 
@@ -11,18 +11,17 @@ def create_fc_vector_npz(data_path, tfuncs, tvars):
     stl 데이터가 뉴럴 네트워크를 거쳐 출력된 fc_vector를 stl 파일 이름을 dictionary의 key로 하여 .npz파일에 저장
     :param data_path: ModelNet .stl 파일 경로
     """
-    npz_dict = {}
     for cad_class in os.listdir(data_path):
+        npz_dict = {}
         class_folder = os.path.join(data_path, cad_class)
-        for stl_file_name in os.listdir(class_folder):
+        for index, stl_file_name in enumerate(os.listdir(class_folder)):
             stl_file = os.path.join(class_folder, stl_file_name)
-            off_file = stl2off(stl_file)
+            off_file = stl2off(stl_file, delete_file=False)
             mat_file = off2mat(off_file)
             npz_file = mat2npz(mat_file)
             fc_vector = run(tvars, tfuncs, npz_file)
             npz_dict.update({stl_file_name.split('.')[0]: fc_vector})
-            print({stl_file_name.split('.')[0]: fc_vector})
-    np.savez_compressed('fc_vector_set.npz', **npz_dict)
+        np.savez_compressed('fc_vector_set_{}.npz'.format(cad_class), **npz_dict)
 
 
 def stl2off_meshconv(file_path):
@@ -38,9 +37,3 @@ def stl2off_meshconv(file_path):
                 for off_file in os.listdir(class_folder):
                     os.path.join(class_folder, off_file)
                     f.write("meshconv -c stl -tri {} \n".format(os.path.join(class_folder, off_file)))
-
-
-if __name__ == '__main__':
-    data_path = '/Users/noah/Projects/automodeling/ModelNet40_stl'
-    tfuncs, tvars = initialize(model='VRN')
-    create_fc_vector_npz(tfuncs, tvars, data_path)
