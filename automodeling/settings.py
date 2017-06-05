@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # local
     'automodeling',
     'design',
+    'recognize',
 ]
 
 MIDDLEWARE = [
