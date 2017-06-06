@@ -5,7 +5,7 @@ from pprint import pprint
 import numpy as np
 
 from recognize.classifier import run, initialize
-from recognize.converter import data2npz
+from recognize.converter import to_npz
 
 MODEL_NET_40_CLASS = ['airplane', 'bathtub', 'bed', 'bench', 'bookshelf', 'bottle', 'bowl', 'car', 'chair', 'cone',
                       'cup', 'curtain', 'desk', 'door', 'dresser', 'flower_pot', 'glass_box', 'guitar', 'keyboard',
@@ -18,7 +18,7 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def get_model_info(tfuncs, tvars, stl_data):
     # print("GET_MODEL_INFO: npz_file")
-    npz_file = data2npz(stl_data, rotate=True)
+    npz_file = to_npz(stl_data, rotate=True)
     # print("GET_MODEL_INFO: fc_vector")
     fc_vector = run(tvars, tfuncs, npz_file)
     # print("GET_MODEL_INFO: related_models")
@@ -45,7 +45,7 @@ def get_related_models(fc_vector, data_path=os.path.join(CURRENT_DIR, 'fc_vector
     for key, value in fc_vector_data.items():
         l2 = np.linalg.norm(np.array(fc_vector) - np.array(value))
         l2_set.update({key: l2})
-    related_model_list = sorted(l2_set, key=l2_set.get, reverse=True)[:num_model]
+    related_model_list = sorted(l2_set, key=l2_set.get)[:num_model]
     return related_model_list
 
 

@@ -100,13 +100,26 @@ def mat2npz(mat_file, npz_file=None, res=RESOLUTION, num_rotate=NUM_ROTATE, dele
     return npz_file
 
 
-def data2npz(stl_data, rotate=False):
-    stl_file = data2stl(stl_data)
-    if rotate:
-        stl_file = rotate_stl(stl_file, axis=[0.5, 0.0, 0.0], degree=90)
-    off_file = stl2off(stl_file)
-    mat_file = off2mat(off_file)
-    return mat2npz(mat_file)
+def to_npz(input_data, rotate=False):
+    """
+    :param input_data: text 형태의 stl 데이터, '.stl', '.off', '.mat' 파일 input 으로 가능
+    :param rotate: text 형태의 stl 데이터, '.stl' 의 rotate
+    :return: z축 방향으로 12 바퀴 돌린 voxel 의 npz 파일 경로
+    """
+    _, file_ext = splitext(input_data)
+    if file_ext == '':
+        input_data = data2stl(input_data)
+    if file_ext in ['', '.stl']:
+        if rotate:
+            input_data = rotate_stl(input_data, axis=[0.5, 0.0, 0.0], degree=90)
+        input_data = stl2off(input_data)
+    if file_ext in ['', '.stl', '.off']:
+        input_data = off2mat(input_data)
+    if file_ext in ['', '.stl', '.off', '.mat']:
+        npz_file = mat2npz(input_data)
+    else:
+        raise FileFormatError
+    return npz_file
 
 
 def file_format_check(file, file_format):
