@@ -100,13 +100,21 @@ def mat2npz(mat_file, npz_file=None, res=RESOLUTION, num_rotate=NUM_ROTATE, dele
     return npz_file
 
 
-def data2npz(stl_data, rotate=False):
-    stl_file = data2stl(stl_data)
-    if rotate:
-        stl_file = rotate_stl(stl_file, axis=[0.5, 0.0, 0.0], degree=90)
-    off_file = stl2off(stl_file)
-    mat_file = off2mat(off_file)
-    return mat2npz(mat_file)
+def to_npz(data_to_convert, rotate=False):
+    _, file_ext = splitext(data_to_convert)
+    if file_ext == '':
+        data_to_convert = data2stl(data_to_convert)
+    if file_ext in ['', '.stl']:
+        if rotate:
+            data_to_convert = rotate_stl(data_to_convert, axis=[0.5, 0.0, 0.0], degree=90)
+        data_to_convert = stl2off(data_to_convert)
+    if file_ext in ['', '.stl', '.off']:
+        data_to_convert = off2mat(data_to_convert)
+    if file_ext in ['', '.stl', '.off', '.mat']:
+        data_to_convert = mat2npz(data_to_convert)
+    else:
+        raise FileFormatError
+    return data_to_convert
 
 
 def file_format_check(file, file_format):
